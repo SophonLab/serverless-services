@@ -1,0 +1,65 @@
+service:
+  name: todo
+
+plugins:
+  - serverless-webpack
+
+custom:
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+
+provider:
+  name: aws
+  stage: ${self:custom.stage}
+  region: 'us-east-1'
+  # region: ${self:custom.region}
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:*:*:*"
+
+resources:
+  ${file(./aws-cloudformation-template.yml)}
+
+functions:
+  todoList:
+    handler: todo.list
+    events:
+      - http:
+          method: get
+          path: todos
+          authorizer:
+            arn: ${cf:auth-${self:custom.stage}.AuthLambdaFunctionQualifiedArn}
+            resultTtlInSeconds: 0
+
+  todoCreate:
+    handler: todo.create
+    events:
+      - http:
+          method: post
+          path: todos
+          authorizer:
+            arn: ${cf:auth-${self:custom.stage}.AuthLambdaFunctionQualifiedArn}
+            resultTtlInSeconds: 0
+
+  todoDestroy:
+    handler: todo.destroy
+    events:
+      - http:
+          method: delete
+          path: todos/{id}
+          request:
+            parameters:
+              paths:
+                id: true
+          authorizer:
+            arn: ${cf:auth-${self:custom.stage}.AuthLambdaFunctionQualifiedArn}
+            resultTtlInSeconds: 0

@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: The aws resource template for serverless app
+Resources:
+  userPool:
+    Type: "AWS::Cognito::UserPool"
+    Properties:
+      UserPoolName: ${self:provider.stage}-user-pool
+      Schema:
+      - Name: sub
+        StringAttributeConstraints:
+          MinLength: '1'
+          MaxLength: '2048'
+        DeveloperOnlyAttribute: false
+        Required: true
+        AttributeDataType: String
+        Mutable: false
+      - Name: name
+        StringAttributeConstraints:
+          MinLength: '0'
+          MaxLength: '2048'
+        DeveloperOnlyAttribute: false
+        Required: true
+        AttributeDataType: String
+        Mutable: true
+      - Name: email
+        StringAttributeConstraints:
+          MinLength: '0'
+          MaxLength: '2048'
+        DeveloperOnlyAttribute: false
+        Required: true
+        AttributeDataType: String
+        Mutable: false
+      - Name: email_verified
+        AttributeDataType: Boolean
+        DeveloperOnlyAttribute: false
+        Required: false
+        Mutable: true
+      - Name: updated_at
+        NumberAttributeConstraints:
+          MinValue: '0'
+        DeveloperOnlyAttribute: false
+        Required: false
+        AttributeDataType: Number
+        Mutable: true
+      AdminCreateUserConfig:
+        UnusedAccountValidityDays: 7
+        AllowAdminCreateUserOnly: false
+      MfaConfiguration: 'OFF'
+      EmailConfiguration: {}
+      Policies:
+        PasswordPolicy:
+          RequireLowercase: true
+          RequireSymbols: false
+          RequireNumbers: true
+          MinimumLength: 8
+          RequireUppercase: true
+      LambdaConfig: {}
+
+  userPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: ${self:provider.stage}-user-pool-client
+      UserPoolId:
+        Ref: "userPool"
+      GenerateSecret: true
+      WriteAttributes:
+      - email
+      - name
+      - updated_at
+      ReadAttributes:
+      - email
+      - email_verified
+      - name
+      - updated_at
+      RefreshTokenValidity: 30
+
+Outputs:
+  userPoolId:
+    Value:
+      Ref: "userPool"
+  userPoolClientId:
+    Value:
+      Ref: "userPoolClient"

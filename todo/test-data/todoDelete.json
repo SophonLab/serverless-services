@@ -1,0 +1,13 @@
+{
+  "resource": "/todos/dulala",
+  "path": "/todos/dulala",
+  "httpMethod": "DELETE",
+  "headers": {
+    "Accept": "*/*"
+  },
+  "queryStringParameters": null,
+  "pathParameters": { "id": "dulala" },
+  "stageVariables": null,
+  "body": null,
+  "isBase64Encoded": false
+}
