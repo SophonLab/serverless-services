@@ -2,9 +2,14 @@
 
 Auth service initialize an Amazon Cognito user pool and user pool client, and handles user signin/signout, and acts as an authorizer for other lambda functions.
 
-Due to current limitation of cloudformation, many settings still require manual operations from AWS Management Console.
+## Getting Started
+
+- Install serverless cli `npm install -g serverless`
+- `sls deploy`
 
 ## Settings that need to be filled
+
+Due to current limitation of cloudformation, many settings still require manual operations from AWS Management Console.
 
 - "Verification" for email delivery configuration
 - "App client settings" including identity pool and callback/signout urls
