@@ -14,9 +14,6 @@ provider:
   region: ${self:custom.region}
   runtime: nodejs6.10
 
-resources:
-  ${file(./aws-cloudformation-template.yml)}
-
 functions:
   auth:
     handler: auth.authorize

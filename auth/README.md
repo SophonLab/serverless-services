@@ -1,6 +1,6 @@
 # Auth
 
-Auth service initialize an Amazon Cognito user pool and user pool client, and handles user signin/signout, and acts as an authorizer for other lambda functions.
+Auth service uses Auth0 user pool and provide an auth function which can act as an authorizer for other lambda functions.
 
 ## Getting Started
 
@@ -35,8 +35,8 @@ Due to current limitation of cloudformation, many settings still require manual 
       - https://sophon.auth.us-east-1.amazoncognito.com/oauth2/idpresponse
 - "Attribute mapping"
   - Google
-    - email/email_verified
-    - sub to name
+    - name/email/email_verified
+    - sub to username
 
 ## The Cognito UI for user sign in
 
@@ -51,5 +51,5 @@ ${callback_url}#id_token=${id_token}&access_token=${access_token}&expires_in=${e
 
 ## Some Good Reads
 
-https://auth0.com/docs/api-auth/grant/authorization-code
-https://auth0.com/docs/api-auth/grant/implicit
+- https://auth0.com/docs/api-auth/grant/authorization-code
+- https://auth0.com/docs/api-auth/grant/implicit

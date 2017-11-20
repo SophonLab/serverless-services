@@ -1,15 +1,36 @@
-const aws = require('aws-sdk');
+// Basically send following HTTP request
+//
+// GET https://sophon.auth0.com/userinfo
+// Authorization: 'Bearer {ACCESS_TOKEN}'
+//
+// Which Returns:
+//
+// {
+//   "email_verified": false,
+//   "email": "test.account@userinfo.com",
+//   "clientID": "q2hnj2iu...",
+//   "updated_at": "2016-12-05T15:15:40.545Z",
+//   "name": "test.account@userinfo.com",
+//   "picture": "https://s.gravatar.com/avatar/dummy.png",
+//   "user_id": "auth0|58454...",
+//   "nickname": "test.account",
+//   "created_at": "2016-12-05T11:16:59.640Z",
+//   "sub": "auth0|58454..."
+// }
+//
 
-const cognito = new aws.CognitoIdentityServiceProvider();
+const request = require('request');
 
-function getUserAttributes(cognitoResponse) {
-  return cognitoResponse.UserAttributes.reduce(
-    (memo, attr) => {
-      memo[attr.Name] = attr.Value;
-      return memo;
-    },
-    { username: cognitoResponse.Username }
-  );
+const SOPHON_AUTH_ENDPOINT = 'https://sophon.auth0.com';
+
+// extract only user data that is necessary for services
+function getUserContext(data) {
+  return {
+    sub: data.sub,
+    email: data.email,
+    name: data.name,
+    picture: data.picture
+  };
 }
 
 // Reusable Authorizer function, set on `authorizer` field in serverless.yml
@@ -21,32 +42,40 @@ module.exports.authorize = (event, context, cb) => {
     // Remove 'bearer ' from token:
     const token = event.authorizationToken.substring(7);
 
-    cognito.getUser({ AccessToken: token }, function(err, data) {
-      if (err) {
-        console.log('GetUser error:', err);
+    console.log('Authorizing with Token: ' + token);
 
-        cb('Unauthorized');
-      } else {
-        const attributes = getUserAttributes(data);
+    request.get(
+      SOPHON_AUTH_ENDPOINT + '/userinfo',
+      { json: true, auth: { 'bearer': token } },
+      function(err, response) {
+        if (err) {
+          console.log('Auth0 Error:', err);
 
-        console.log(attributes);
+          cb('Unauthorized');
+        } else if (response.statusCode !== 200) {
+          cb('Unauthorized');
+        } else {
+          const userContext = getUserContext(response.body);
 
-        cb(null, {
-          principalId: attributes.sub,
-          policyDocument: {
-            Version: '2012-10-17',
-            Statement: [
-              {
-                Effect: 'Allow',
-                Action: 'execute-api:Invoke',
-                Resource: event.methodArn
-              }
-            ]
-          },
-          context: attributes
-        });
+          console.log(userContext);
+
+          cb(null, {
+            principalId: userContext.sub,
+            policyDocument: {
+              Version: '2012-10-17',
+              Statement: [
+                {
+                  Effect: 'Allow',
+                  Action: 'execute-api:Invoke',
+                  Resource: event.methodArn
+                }
+              ]
+            },
+            context: userContext
+          });
+        }
       }
-    });
+    );
   } else {
     console.log('No authorizationToken found in the header.');
 

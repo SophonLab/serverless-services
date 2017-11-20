@@ -17,6 +17,6 @@
   "author": "ben@bencao.it",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.142.0"
+    "request": "^2.83.0"
   }
 }
