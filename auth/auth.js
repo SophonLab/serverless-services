@@ -52,8 +52,20 @@ module.exports.authorize = (event, context, cb) => {
           console.log('Auth0 Error:', err);
 
           cb('Unauthorized');
+        } else if (response.statusCode === 429) {
+          console.log(
+            'Auth0 Status Abnormal Code: ', response.statusCode,
+            'Body :', response.body
+          );
+
+          cb('Too Many Requests');
         } else if (response.statusCode !== 200) {
-          cb('Unauthorized');
+          console.log(
+            'Auth0 Status Abnormal Code: ', response.statusCode,
+            'Body :', response.body
+          );
+
+          cb('Identity Provider Side Errors');
         } else {
           const userContext = getUserContext(response.body);
 
