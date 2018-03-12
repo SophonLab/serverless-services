@@ -1,0 +1,38 @@
+service:
+  name: art
+
+plugins:
+  - serverless-webpack
+
+custom:
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+
+provider:
+  name: aws
+  stage: ${self:custom.stage}
+  region: 'us-west-2'
+  # region: ${self:custom.region}
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+      Resource: "arn:aws:dynamodb:*:*:*"
+
+resources:
+  ${file(./aws-cloudformation-template.yml)}
+
+functions:
+  artList:
+    handler: art.list
+    events:
+      - http:
+          method: get
+          path: arts
+          authorizer:
+            arn: ${cf:auth-${self:custom.stage}.AuthLambdaFunctionQualifiedArn}
+            resultTtlInSeconds: 0

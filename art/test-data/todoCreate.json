@@ -1,0 +1,13 @@
+{
+  "resource": "/todos",
+  "path": "/todos",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "*/*"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "body": "{\"uuid\":\"dulala\",\"name\":\"Ben Ha La\"}",
+  "isBase64Encoded": false
+}
