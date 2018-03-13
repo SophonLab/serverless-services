@@ -1,8 +1,10 @@
 {
-  "name": "todo",
+  "name": "art",
   "version": "1.0.0",
-  "description": "Serverless Todo Project with ecma support",
+  "description": "Sophon Art Service",
   "scripts": {
+    "format": "prettier --write \"*.js\"",
+    "lint": "xo *.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -11,13 +13,25 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.6.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "prettier": "^1.11.1",
     "serverless-webpack": "^3.1.2",
-    "webpack": "^3.3.0"
+    "webpack": "^3.3.0",
+    "xo": "^0.20.3"
   },
   "author": "ben@bencao.it",
   "license": "MIT",
   "dependencies": {
-    "@sophon-lab/lambda-kit": "^1.0.3",
+    "@sophon-lab/lambda-kit": "^1.0.5",
     "aws-sdk": "^2.207.0"
+  },
+  "xo": {
+    "prettier": true,
+    "space": true
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "bracketSpacing": false
   }
 }

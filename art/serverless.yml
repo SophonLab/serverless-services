@@ -29,10 +29,3 @@ resources:
 functions:
   artList:
     handler: art.list
-    events:
-      - http:
-          method: get
-          path: arts
-          authorizer:
-            arn: ${cf:auth-${self:custom.stage}.AuthLambdaFunctionQualifiedArn}
-            resultTtlInSeconds: 0
