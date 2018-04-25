@@ -1,0 +1,57 @@
+service:
+  name: instance
+
+plugins:
+  - serverless-webpack
+
+custom:
+  region: ${opt:region, 'eu-west-3'}
+  stage: ${opt:stage, 'dev'}
+
+provider:
+  name: aws
+  stage: ${self:custom.stage}
+  region: 'eu-west-3'
+  # region: ${self:custom.region}
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'ec2:Describe*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - ec2:RunInstances
+        - ec2:TerminateInstances
+        - ec2:StopInstances
+        - ec2:StartInstances
+      Resource: 'arn:aws:ec2:*:*:*'
+
+resources:
+  ${file(./aws-cloudformation-template.yml)}
+
+functions:
+  instanceList:
+    handler: instance.list
+    events:
+      - http:
+          method: get
+          path: instances
+
+  instanceCreate:
+    handler: instance.create
+    events:
+      - http:
+          method: post
+          path: instances
+
+  instanceDestroy:
+    handler: instance.destroy
+    events:
+      - http:
+          method: delete
+          path: instances/{id}
+          request:
+            parameters:
+              paths:
+                id: true

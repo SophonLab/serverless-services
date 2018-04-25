@@ -1,0 +1,13 @@
+{
+  "resource": "/instances",
+  "path": "/instances",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "*/*"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "body": "{\"imageId\":\"ami-0fee5f72\"}",
+  "isBase64Encoded": false
+}

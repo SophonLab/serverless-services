@@ -1,0 +1,13 @@
+{
+  "resource": "/instances/i-0da3532c9781a84d0",
+  "path": "/instances/i-0da3532c9781a84d0",
+  "httpMethod": "DELETE",
+  "headers": {
+    "Accept": "*/*"
+  },
+  "queryStringParameters": null,
+  "pathParameters": { "id": "i-0da3532c9781a84d0" },
+  "stageVariables": null,
+  "body": null,
+  "isBase64Encoded": false
+}
